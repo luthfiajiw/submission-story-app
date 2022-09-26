@@ -6,4 +6,7 @@
     <string name="welcome_to_storyapp">Welcome to StoryApp</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="sign_in_to_continue">Sign In to continue</string>
+    <string name="sign_in">Sign In</string>
+    <string name="text_register">Don\'t have account? Register Now</string>
 </resources>
