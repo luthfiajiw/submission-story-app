@@ -9,4 +9,8 @@
     <string name="sign_in_to_continue">Sign In to continue</string>
     <string name="sign_in">Sign In</string>
     <string name="text_register">Don\'t have account? Register Now</string>
+    <string name="register">Register</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="text_signin">Have an account? Back to Sign In</string>
+    <string name="name">Name</string>
 </resources>

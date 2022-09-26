@@ -7,13 +7,16 @@
         <entry key="app/src/main/res/drawable/bg_button_disabled.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/custom_ic_email.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/custom_ic_lock.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/custom_ic_person.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_email_focus.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_lock_focus.xml" value="0.132" />
+        <entry key="app/src/main/res/drawable/ic_person_focus.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/textfield.xml" value="0.132" />
         <entry key="app/src/main/res/layout-v28/activity_sign_in.xml" value="0.21331521739130435" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.2755340576171875" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.31590118408203127" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.165" />
       </map>
     </option>

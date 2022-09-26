@@ -15,7 +15,6 @@ import com.submission.app.story.shared.components.TextField
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var btnSignin: CustomButton
-    private lateinit var edEmail: TextField
     private lateinit var edPassword: TextField
     private lateinit var textRegister: TextView
     private lateinit var binding: ActivitySignInBinding
@@ -26,7 +25,6 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.apply {
-            edEmail = edLoginEmail
             edPassword = edLoginPassword
             this@SignInActivity.textRegister = textRegister
             this@SignInActivity.btnSignin = btnSignin
@@ -49,7 +47,14 @@ class SignInActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val stringLength = s?.toString()?.length ?: 0
-                btnSignin.isEnabled = stringLength >= 6
+
+                if (stringLength < 6) {
+                    edPassword.error = "Password must be minimum 6 characters"
+                    btnSignin.isEnabled = false
+                } else {
+                    btnSignin.isEnabled = true
+                    edPassword.error = null
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
