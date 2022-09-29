@@ -1,13 +1,12 @@
 package com.submission.app.story.auth
 
 import com.submission.app.story.auth.models.LoginResponse
-import com.submission.app.story.auth.models.RegisterResponse
+import com.submission.app.story.shared.models.GenericResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -19,7 +18,7 @@ interface AuthRequest {
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<RegisterResponse>
+    ): Call<GenericResponse>
 
     @FormUrlEncoded
     @POST("login")
@@ -36,7 +35,7 @@ class AuthService {
             .addInterceptor(loggingInterceptor)
             .build()
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://story-api.dicoding.dev/")
+            .baseUrl("https://story-api.dicoding.dev/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

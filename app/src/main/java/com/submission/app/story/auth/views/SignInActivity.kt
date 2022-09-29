@@ -2,6 +2,7 @@ package com.submission.app.story.auth.views
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,14 +10,27 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
+import com.submission.app.story.auth.AuthViewModel
+import com.submission.app.story.auth.models.AuthModel
+import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.databinding.ActivitySignInBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
+import com.submission.app.story.shared.utils.ViewModelFactory
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var btnSignin: CustomButton
     private lateinit var edPassword: TextField
+    private lateinit var edEmail: TextField
     private lateinit var textRegister: TextView
+    private lateinit var authViewModel: AuthViewModel
     private lateinit var binding: ActivitySignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,19 +38,54 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.apply {
-            edPassword = edLoginPassword
-            this@SignInActivity.textRegister = textRegister
-            this@SignInActivity.btnSignin = btnSignin
-        }
-
         supportActionBar?.hide()
+        bindView()
+        initViewModel()
         startAnimation()
         handleChangedPassword()
+        handleLogin()
 
         textRegister.setOnClickListener {
             val intent = Intent(this@SignInActivity, SignUpActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun bindView() {
+        edEmail = binding.edLoginEmail
+        edPassword = binding.edLoginPassword
+        textRegister = binding.textRegister
+        btnSignin = binding.btnSignin
+    }
+
+    private fun initViewModel() {
+        val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
+        authViewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
+    }
+
+    private fun handleLogin() {
+        btnSignin.setOnClickListener {
+            authViewModel.onLogin(AuthModel(
+                name = "",
+                email = edEmail.text.toString(),
+                password = edPassword.text.toString()
+            ))
+        }
+
+        authViewModel.loginResponse.observe(this) {
+            it.getContentIfNotHandled()?.let { response ->
+                Toast.makeText(this@SignInActivity, response.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        authViewModel.genericResponse.observe(this) {
+            it.getContentIfNotHandled()?.let { response ->
+                Toast.makeText(this@SignInActivity, response.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        authViewModel.isLoading.observe(this) { loading ->
+            btnSignin.isEnabled = !loading && edPassword.text.toString().length > 6
         }
     }
 

@@ -18,11 +18,11 @@ class AuthPref private constructor(private val dataStore: DataStore<Preferences>
         }
     }
 
-    suspend fun saveCredential(loginResult: LoginResult) {
+    suspend fun saveCredential(loginResult: LoginResult?) {
         dataStore.edit { prefs ->
-            prefs[USERID] = loginResult.userId
-            prefs[NAME] = loginResult.name
-            prefs[TOKEN] = loginResult.token
+            prefs[USERID] = loginResult?.userId ?: ""
+            prefs[NAME] = loginResult?.name ?: ""
+            prefs[TOKEN] = loginResult?.token ?: ""
         }
     }
 

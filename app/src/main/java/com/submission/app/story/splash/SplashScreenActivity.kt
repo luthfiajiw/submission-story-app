@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -57,7 +56,7 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun initViewModel() {
         splashViewModel = ViewModelProvider(
             this,
-            ViewModelFactory(this@SplashScreenActivity.application, AuthPref.getInstance(dataStore))
+            ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         )[SplashViewModel::class.java]
 
         splashViewModel.getCredential().observe(this) {
