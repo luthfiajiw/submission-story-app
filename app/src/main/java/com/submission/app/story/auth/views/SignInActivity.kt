@@ -22,6 +22,7 @@ import com.submission.app.story.databinding.ActivitySignInBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
 import com.submission.app.story.shared.utils.ViewModelFactory
+import com.submission.app.story.story.views.ListStoryActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")
 
@@ -42,7 +43,7 @@ class SignInActivity : AppCompatActivity() {
         bindView()
         initViewModel()
         startAnimation()
-        handleChangedPassword()
+        handleChangePassword()
         handleLogin()
 
         textRegister.setOnClickListener {
@@ -75,6 +76,11 @@ class SignInActivity : AppCompatActivity() {
         authViewModel.loginResponse.observe(this) {
             it.getContentIfNotHandled()?.let { response ->
                 Toast.makeText(this@SignInActivity, response.message, Toast.LENGTH_SHORT).show()
+                if (!response.error) {
+                    val listStory = Intent(this@SignInActivity, ListStoryActivity::class.java)
+                    startActivity(listStory)
+                    finish()
+                }
             }
         }
 
@@ -89,7 +95,7 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleChangedPassword() {
+    private fun handleChangePassword() {
         edPassword.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }

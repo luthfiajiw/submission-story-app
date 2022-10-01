@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.submission.app.story.auth.AuthViewModel
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.splash.SplashViewModel
+import com.submission.app.story.story.viewmodels.StoryViewModel
 
 class ViewModelFactory(
     private val pref: AuthPref
@@ -31,6 +32,8 @@ class ViewModelFactory(
             return AuthViewModel(pref) as T
         } else if (modelClass.isAssignableFrom(SplashViewModel::class.java)) {
             return SplashViewModel(pref) as T
+        } else if (modelClass.isAssignableFrom(StoryViewModel::class.java)) {
+            return StoryViewModel(pref) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }

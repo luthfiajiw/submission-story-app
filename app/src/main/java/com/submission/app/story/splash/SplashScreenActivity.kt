@@ -19,6 +19,7 @@ import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.views.SignInActivity
 import com.submission.app.story.databinding.ActivitySplashScreenBinding
 import com.submission.app.story.shared.utils.ViewModelFactory
+import com.submission.app.story.story.views.ListStoryActivity
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -53,6 +54,12 @@ class SplashScreenActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun routeToHome() {
+        val intent = Intent(this@SplashScreenActivity, ListStoryActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     private fun initViewModel() {
         splashViewModel = ViewModelProvider(
             this,
@@ -62,6 +69,8 @@ class SplashScreenActivity : AppCompatActivity() {
         splashViewModel.getCredential().observe(this) {
             if (it.token.isEmpty()) {
                 routeToSignIn()
+            } else {
+                routeToHome()
             }
         }
     }
