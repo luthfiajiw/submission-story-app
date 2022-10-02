@@ -2,12 +2,14 @@ package com.submission.app.story.story.views
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -18,6 +20,7 @@ import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.views.SignInActivity
 import com.submission.app.story.databinding.ActivityListStoryBinding
 import com.submission.app.story.shared.utils.ViewModelFactory
+import com.submission.app.story.shared.utils.uriToFile
 import com.submission.app.story.story.viewmodels.StoryViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")
@@ -26,6 +29,10 @@ class ListStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListStoryBinding
     private lateinit var listStoryAdapter: ListStoryAdapter
     private lateinit var storyViewModel: StoryViewModel
+
+    companion object {
+        const val ADD_STORY_RESULT = 200
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,9 +47,13 @@ class ListStoryActivity : AppCompatActivity() {
             rvStories.setHasFixedSize(true)
             rvStories.adapter = listStoryAdapter
             rvStories.layoutManager = LinearLayoutManager(this@ListStoryActivity)
+            fabAddStory.setOnClickListener {
+                val addStory = Intent(this@ListStoryActivity, AddStoryActivity::class.java)
+                registerResult.launch(addStory)
+            }
         }
 
-        initViewModel()
+        setupViewModel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -63,7 +74,7 @@ class ListStoryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initViewModel() {
+    private fun setupViewModel() {
         val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         storyViewModel = ViewModelProvider(this, factory)[StoryViewModel::class.java]
 
@@ -90,6 +101,16 @@ class ListStoryActivity : AppCompatActivity() {
             } else {
                 loading.visibility = View.GONE
                 rvStories.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private val registerResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == ADD_STORY_RESULT) {
+            storyViewModel.getCredential().observe(this@ListStoryActivity) {credential ->
+                storyViewModel.getStories("Bearer ${credential.token}")
             }
         }
     }

@@ -9,13 +9,18 @@
         <entry key="app/src/main/res/drawable/custom_ic_lock.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/custom_ic_person.xml" value="0.218" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.1795" />
+        <entry key="app/src/main/res/drawable/ic_capture.xml" value="0.1795" />
         <entry key="app/src/main/res/drawable/ic_email.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_email_focus.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_lock_focus.xml" value="0.132" />
         <entry key="app/src/main/res/drawable/ic_person_focus.xml" value="0.218" />
+        <entry key="app/src/main/res/drawable/ic_place_holder.xml" value="0.1795" />
+        <entry key="app/src/main/res/drawable/ic_switch_camera.xml" value="0.1795" />
         <entry key="app/src/main/res/drawable/textfield.xml" value="0.132" />
         <entry key="app/src/main/res/layout-v28/activity_sign_in.xml" value="0.21331521739130435" />
+        <entry key="app/src/main/res/layout/activity_add_story.xml" value="0.3088407924230821" />
+        <entry key="app/src/main/res/layout/activity_camera.xml" value="0.23550724637681159" />
         <entry key="app/src/main/res/layout/activity_list_activity.xml" value="0.23550724637681159" />
         <entry key="app/src/main/res/layout/activity_list_story.xml" value="0.23550724637681159" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.2755340576171875" />
