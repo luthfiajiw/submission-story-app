@@ -12,6 +12,7 @@ import com.submission.app.story.story.StoryResponse
 
 class ListStoryAdapter() : RecyclerView.Adapter<ListStoryAdapter.ListViewHolder>() {
     private var mData = StoryResponse()
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
     fun setData(storyResponse: StoryResponse) {
         mData = storyResponse
@@ -25,13 +26,24 @@ class ListStoryAdapter() : RecyclerView.Adapter<ListStoryAdapter.ListViewHolder>
             with(itemView) {
                 binding.apply {
                     name.text = story.name
-                    description.text = story.description
                     Glide.with(context)
                         .load(story.photoUrl)
                         .into(image)
                 }
+
+                setOnClickListener{
+                    onItemClickCallback.onItemClicked(story)
+                }
             }
         }
+    }
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
+
+    interface OnItemClickCallback {
+        fun onItemClicked(data: Story)
     }
 
     override fun onCreateViewHolder(

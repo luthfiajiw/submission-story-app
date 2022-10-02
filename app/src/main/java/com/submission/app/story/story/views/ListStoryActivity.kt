@@ -21,6 +21,7 @@ import com.submission.app.story.auth.views.SignInActivity
 import com.submission.app.story.databinding.ActivityListStoryBinding
 import com.submission.app.story.shared.utils.ViewModelFactory
 import com.submission.app.story.shared.utils.uriToFile
+import com.submission.app.story.story.Story
 import com.submission.app.story.story.viewmodels.StoryViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")
@@ -39,7 +40,7 @@ class ListStoryActivity : AppCompatActivity() {
         binding = ActivityListStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        listStoryAdapter = ListStoryAdapter()
+        initListAdapter()
         supportActionBar?.apply {
             title = "StoryApp"
         }
@@ -54,6 +55,18 @@ class ListStoryActivity : AppCompatActivity() {
         }
 
         setupViewModel()
+    }
+
+    private fun initListAdapter() {
+        listStoryAdapter = ListStoryAdapter()
+        listStoryAdapter.setOnItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: Story) {
+                val detailStory = Intent(this@ListStoryActivity, DetailStoryActivity::class.java)
+                detailStory.putExtra(DetailStoryActivity.EXTRA_STORY, data)
+                startActivity(detailStory)
+            }
+
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
