@@ -26,7 +26,7 @@ class AuthPref private constructor(private val dataStore: DataStore<Preferences>
         }
     }
 
-    suspend fun deleteCredential(loginResult: LoginResult) {
+    suspend fun deleteCredential() {
         dataStore.edit { prefs ->
             prefs[USERID] = ""
             prefs[NAME] = ""

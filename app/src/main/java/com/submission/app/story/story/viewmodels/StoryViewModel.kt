@@ -1,13 +1,11 @@
 package com.submission.app.story.story.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.models.LoginResult
 import com.submission.app.story.story.StoryResponse
 import com.submission.app.story.story.StoryService
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,6 +21,12 @@ class StoryViewModel(private val pref: AuthPref) : ViewModel() {
 
     fun getCredential(): LiveData<LoginResult> {
         return pref.getCredential().asLiveData()
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            pref.deleteCredential()
+        }
     }
 
     fun getStories(token: String) {
