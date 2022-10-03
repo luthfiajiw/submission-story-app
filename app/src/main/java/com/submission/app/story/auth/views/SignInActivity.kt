@@ -43,7 +43,6 @@ class SignInActivity : AppCompatActivity() {
         bindView()
         initViewModel()
         startAnimation()
-        handleChangePassword()
         handleLogin()
 
         textRegister.setOnClickListener {
@@ -91,31 +90,8 @@ class SignInActivity : AppCompatActivity() {
         }
 
         authViewModel.isLoading.observe(this) { loading ->
-            btnSignin.isEnabled = !loading && edPassword.text.toString().length > 6
+            btnSignin.isEnabled = !loading
         }
-    }
-
-    private fun handleChangePassword() {
-        edPassword.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val stringLength = s?.toString()?.length ?: 0
-
-                if (stringLength < 6) {
-                    edPassword.error = "Password must be minimum 6 characters"
-                    btnSignin.isEnabled = false
-                } else {
-                    btnSignin.isEnabled = true
-                    edPassword.error = null
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-        })
     }
 
     private fun startAnimation() {

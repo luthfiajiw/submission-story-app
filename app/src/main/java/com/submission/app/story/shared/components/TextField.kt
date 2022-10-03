@@ -2,6 +2,9 @@ package com.submission.app.story.shared.components
 
 import android.content.Context
 import android.graphics.Canvas
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -31,6 +34,25 @@ class TextField : AppCompatEditText, OnTouchListener {
             textSize = 14f
             background = ContextCompat.getDrawable(context, R.drawable.textfield)
         }
+
+        addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val stringLength = s?.toString()?.length ?: 0
+
+                error = if (stringLength < 6 && inputType == 129) {
+                    "Password must be minimum 6 characters"
+                } else {
+                    null
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+        })
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -38,7 +60,6 @@ class TextField : AppCompatEditText, OnTouchListener {
     }
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-        Log.d(TAG, "onTouch: Touched")
         return true
     }
 

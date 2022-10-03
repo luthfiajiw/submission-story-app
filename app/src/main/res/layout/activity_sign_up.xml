@@ -81,7 +81,6 @@
 
     <com.submission.app.story.shared.components.CustomButton
         android:id="@+id/btn_register"
-        android:enabled="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sign_up"
