@@ -2,13 +2,12 @@ package com.submission.app.story.story.views
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -19,10 +18,10 @@ import com.submission.app.story.R
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.views.SignInActivity
 import com.submission.app.story.databinding.ActivityListStoryBinding
-import com.submission.app.story.shared.utils.ViewModelFactory
-import com.submission.app.story.shared.utils.uriToFile
+import com.submission.app.story.shared.utils.Result
 import com.submission.app.story.story.Story
 import com.submission.app.story.story.viewmodels.StoryViewModel
+import com.submission.app.story.story.viewmodels.StoryViewModelFactory
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")
 
@@ -88,20 +87,28 @@ class ListStoryActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
+        val factory = StoryViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         storyViewModel = ViewModelProvider(this, factory)[StoryViewModel::class.java]
 
         storyViewModel.getCredential().observe(this) {credential ->
-            storyViewModel.getStories("Bearer ${credential.token}")
+            getStories(credential.token)
         }
+    }
 
-        storyViewModel.isLoading.observe(this) {
-            handleLoading(it)
-        }
-
-        storyViewModel.storyResponse.observe(this) { stories ->
-            if (stories != null) {
-                listStoryAdapter.setData(stories)
+    private fun getStories(token: String) {
+        storyViewModel.getStories("Bearer $token").observe(this) {
+            if (it != null) {
+                when (it) {
+                    is Result.Loading -> handleLoading(true)
+                    is Result.Success -> {
+                        handleLoading(false)
+                        listStoryAdapter.setData(it.data)
+                    }
+                    is Result.Error -> {
+                        handleLoading(false)
+                        Toast.makeText(this@ListStoryActivity, it.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
@@ -123,7 +130,7 @@ class ListStoryActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == ADD_STORY_RESULT) {
             storyViewModel.getCredential().observe(this@ListStoryActivity) {credential ->
-                storyViewModel.getStories("Bearer ${credential.token}")
+                getStories(credential.token)
             }
         }
     }

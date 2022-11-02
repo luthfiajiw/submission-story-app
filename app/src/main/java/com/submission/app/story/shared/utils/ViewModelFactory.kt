@@ -30,8 +30,6 @@ class ViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
        if (modelClass.isAssignableFrom(SplashViewModel::class.java)) {
             return SplashViewModel(pref) as T
-        } else if (modelClass.isAssignableFrom(StoryViewModel::class.java)) {
-            return StoryViewModel(pref) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }

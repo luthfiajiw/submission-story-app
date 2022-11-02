@@ -22,10 +22,11 @@ import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.databinding.ActivityAddStoryBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
-import com.submission.app.story.shared.utils.ViewModelFactory
+import com.submission.app.story.shared.utils.Result
 import com.submission.app.story.shared.utils.rotateBitmap
 import com.submission.app.story.shared.utils.uriToFile
 import com.submission.app.story.story.viewmodels.StoryViewModel
+import com.submission.app.story.story.viewmodels.StoryViewModelFactory
 import java.io.File
 import java.util.*
 import kotlin.concurrent.schedule
@@ -90,7 +91,7 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
+        val factory = StoryViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         storyViewModel = ViewModelProvider(this, factory)[StoryViewModel::class.java]
     }
 
@@ -98,30 +99,34 @@ class AddStoryActivity : AppCompatActivity() {
         btnUpload.setOnClickListener {
             if (getFile != null) {
                 storyViewModel.getCredential().observe(this) { cred ->
-                    storyViewModel.uploadImage(cred.token, getFile!!, edDescription.text.toString())
-                }
-            } else {
-                Toast.makeText(this@AddStoryActivity, "Silahkan pilih gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        storyViewModel.isLoading.observe(this) {loading ->
-            btnUpload.isEnabled = !loading
-        }
-
-        storyViewModel.genericResponse.observe(this) {
-            it.getContentIfNotHandled()?.let { response ->
-                if (response.error) {
-                    Toast.makeText(this@AddStoryActivity, response.message, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@AddStoryActivity, response.message, Toast.LENGTH_SHORT).show()
-                    Timer().schedule(1000) {
-                        this@AddStoryActivity.runOnUiThread {
-                            setResult(ListStoryActivity.ADD_STORY_RESULT)
-                            finish()
+                    storyViewModel.uploadImage(
+                        cred.token,
+                        getFile!!,
+                        edDescription.text.toString()
+                    ).observe(this) {
+                        if (it != null) {
+                            when (it) {
+                                is Result.Loading -> btnUpload.isEnabled = false
+                                is Result.Success -> {
+                                    btnUpload.isEnabled = true
+                                    Toast.makeText(this@AddStoryActivity, it.data.message, Toast.LENGTH_SHORT).show()
+                                    Timer().schedule(1000) {
+                                        this@AddStoryActivity.runOnUiThread {
+                                            setResult(ListStoryActivity.ADD_STORY_RESULT)
+                                            finish()
+                                        }
+                                    }
+                                }
+                                is Result.Error -> {
+                                    btnUpload.isEnabled = true
+                                    Toast.makeText(this@AddStoryActivity, it.error, Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
                 }
+            } else {
+                Toast.makeText(this@AddStoryActivity, "Silahkan pilih gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
             }
         }
     }

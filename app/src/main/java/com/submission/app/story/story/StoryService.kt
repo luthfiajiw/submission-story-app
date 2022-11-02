@@ -12,17 +12,17 @@ import retrofit2.http.*
 
 interface StoryRequest {
     @GET("stories?size=20")
-    fun getStories(
+    suspend fun getStories(
         @Header("Authorization") token : String
-    ) : Call<StoryResponse>
+    ) : StoryResponse
 
     @Multipart
     @POST("stories")
-    fun uploadImage(
+    suspend fun uploadImage(
         @Header("Authorization") token : String,
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody
-    ) : Call<GenericResponse>
+    ) : GenericResponse
 }
 
 class StoryService {
