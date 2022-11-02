@@ -2,10 +2,8 @@ package com.submission.app.story.shared.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.submission.app.story.auth.viewmodels.AuthViewModel
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.splash.SplashViewModel
-import com.submission.app.story.story.viewmodels.StoryViewModel
 
 class ViewModelFactory(
     private val pref: AuthPref

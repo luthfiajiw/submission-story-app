@@ -21,7 +21,6 @@ import com.submission.app.story.databinding.ActivitySignInBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
 import com.submission.app.story.shared.utils.Result
-import com.submission.app.story.shared.utils.ViewModelFactory
 import com.submission.app.story.story.views.ListStoryActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "credential")

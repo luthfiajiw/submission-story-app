@@ -2,9 +2,7 @@ package com.submission.app.story.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.google.gson.Gson
 import com.submission.app.story.auth.models.AuthModel
-import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.models.LoginResponse
 import com.submission.app.story.shared.models.GenericResponse
 import com.submission.app.story.shared.utils.Result
