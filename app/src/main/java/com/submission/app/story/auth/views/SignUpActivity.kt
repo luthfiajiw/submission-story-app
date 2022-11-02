@@ -3,20 +3,19 @@ package com.submission.app.story.auth.views
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import com.submission.app.story.auth.AuthViewModel
+import com.submission.app.story.auth.viewmodels.AuthViewModel
 import com.submission.app.story.auth.models.AuthModel
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.databinding.ActivitySignUpBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
+import com.submission.app.story.shared.utils.Result
 import com.submission.app.story.shared.utils.ViewModelFactory
 import java.util.*
 import kotlin.concurrent.schedule
@@ -60,28 +59,28 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleRegister() {
         btnRegister.setOnClickListener {
-            authViewModel.onRegister(AuthModel(
+            authViewModel.register(AuthModel(
                 name = edName.text.toString(),
                 email = edEmail.text.toString(),
                 password = edPassword.text.toString()
-            ))
-        }
-
-        authViewModel.genericResponse.observe(this) {
-            it.getContentIfNotHandled()?.let { response ->
-                if (response.error) {
-                    Toast.makeText(this@SignUpActivity, response.message, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@SignUpActivity, response.message, Toast.LENGTH_SHORT).show()
-                    Timer().schedule(1000) {
-                        this@SignUpActivity.runOnUiThread { finish() }
+            )).observe(this) {
+                if (it != null) {
+                    when (it) {
+                        is Result.Loading -> btnRegister.isEnabled = false
+                        is Result.Success -> {
+                            btnRegister.isEnabled = true
+                            Toast.makeText(this@SignUpActivity, it.data.message, Toast.LENGTH_SHORT).show()
+                            Timer().schedule(1000) {
+                                this@SignUpActivity.runOnUiThread { finish() }
+                            }
+                        }
+                        is Result.Error -> {
+                            btnRegister.isEnabled = true
+                            Toast.makeText(this@SignUpActivity, it.error, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
-        }
-
-        authViewModel.isLoading.observe(this) { loading ->
-            btnRegister.isEnabled = !loading
         }
     }
 }

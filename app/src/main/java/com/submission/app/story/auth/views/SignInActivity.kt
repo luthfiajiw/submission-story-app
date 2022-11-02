@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -15,12 +13,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import com.submission.app.story.auth.AuthViewModel
+import com.submission.app.story.auth.viewmodels.AuthViewModel
 import com.submission.app.story.auth.models.AuthModel
 import com.submission.app.story.auth.models.AuthPref
+import com.submission.app.story.auth.viewmodels.AuthViewModelFactory
 import com.submission.app.story.databinding.ActivitySignInBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
+import com.submission.app.story.shared.utils.Result
 import com.submission.app.story.shared.utils.ViewModelFactory
 import com.submission.app.story.story.views.ListStoryActivity
 
@@ -59,38 +59,34 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
+        val factory = AuthViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         authViewModel = ViewModelProvider(this, factory)[AuthViewModel::class.java]
     }
 
     private fun handleLogin() {
         btnSignin.setOnClickListener {
-            authViewModel.onLogin(AuthModel(
+            authViewModel.login(AuthModel(
                 name = "",
                 email = edEmail.text.toString(),
                 password = edPassword.text.toString()
-            ))
-        }
-
-        authViewModel.loginResponse.observe(this) {
-            it.getContentIfNotHandled()?.let { response ->
-                Toast.makeText(this@SignInActivity, response.message, Toast.LENGTH_SHORT).show()
-                if (!response.error) {
-                    val listStory = Intent(this@SignInActivity, ListStoryActivity::class.java)
-                    startActivity(listStory)
-                    finish()
+            )).observe(this) {
+                if (it != null) {
+                    when (it) {
+                        is Result.Loading -> btnSignin.isEnabled = false
+                        is Result.Success -> {
+                            btnSignin.isEnabled = true
+                            authViewModel.onSaveCredentials(it.data.loginResult)
+                            val listStory = Intent(this@SignInActivity, ListStoryActivity::class.java)
+                            startActivity(listStory)
+                            finish()
+                        }
+                        is Result.Error -> {
+                            btnSignin.isEnabled = true
+                            Toast.makeText(this@SignInActivity, it.error, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
-        }
-
-        authViewModel.genericResponse.observe(this) {
-            it.getContentIfNotHandled()?.let { response ->
-                Toast.makeText(this@SignInActivity, response.message, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        authViewModel.isLoading.observe(this) { loading ->
-            btnSignin.isEnabled = !loading
         }
     }
 

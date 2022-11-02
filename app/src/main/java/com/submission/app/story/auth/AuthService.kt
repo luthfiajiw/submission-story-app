@@ -4,7 +4,7 @@ import com.submission.app.story.auth.models.LoginResponse
 import com.submission.app.story.shared.models.GenericResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
@@ -14,18 +14,18 @@ import retrofit2.http.POST
 interface AuthRequest {
     @FormUrlEncoded
     @POST("register")
-    fun postRegister(
+    suspend fun postRegister(
         @Field("name") name: String,
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<GenericResponse>
+    ): GenericResponse
 
     @FormUrlEncoded
     @POST("login")
-    fun postLogin(
+    suspend fun postLogin(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<LoginResponse>
+    ): LoginResponse
 }
 
 class AuthService {
