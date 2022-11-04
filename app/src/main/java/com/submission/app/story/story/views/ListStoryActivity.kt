@@ -18,6 +18,7 @@ import com.submission.app.story.R
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.views.SignInActivity
 import com.submission.app.story.databinding.ActivityListStoryBinding
+import com.submission.app.story.shared.utils.LoadmoreStateAdapter
 import com.submission.app.story.shared.utils.Result
 import com.submission.app.story.story.Story
 import com.submission.app.story.story.viewmodels.StoryViewModel
@@ -44,9 +45,6 @@ class ListStoryActivity : AppCompatActivity() {
             title = "StoryApp"
         }
         binding.apply {
-            rvStories.setHasFixedSize(true)
-            rvStories.adapter = listStoryAdapter
-            rvStories.layoutManager = LinearLayoutManager(this@ListStoryActivity)
             fabAddStory.setOnClickListener {
                 val addStory = Intent(this@ListStoryActivity, AddStoryActivity::class.java)
                 registerResult.launch(addStory)
@@ -66,6 +64,16 @@ class ListStoryActivity : AppCompatActivity() {
             }
 
         })
+
+        binding.apply {
+            rvStories.setHasFixedSize(true)
+            rvStories.layoutManager = LinearLayoutManager(this@ListStoryActivity)
+            rvStories.adapter = listStoryAdapter.withLoadStateFooter(
+                footer = LoadmoreStateAdapter {
+                    listStoryAdapter.retry()
+                }
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
