@@ -88,6 +88,10 @@ class ListStoryActivity : AppCompatActivity() {
 
                 routeToSignIn()
             }
+            R.id.maps -> {
+                val maps = Intent(this@ListStoryActivity, MapsActivity::class.java)
+                startActivity(maps)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
