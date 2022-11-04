@@ -78,12 +78,16 @@ class ListStoryActivity : AppCompatActivity() {
             R.id.more -> {
                 storyViewModel.signOut()
 
-                val signIn = Intent(this@ListStoryActivity, SignInActivity::class.java)
-                startActivity(signIn)
-                finish()
+                routeToSignIn()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun routeToSignIn() {
+        val signIn = Intent(this@ListStoryActivity, SignInActivity::class.java)
+        startActivity(signIn)
+        finish()
     }
 
     private fun setupViewModel() {
@@ -96,17 +100,18 @@ class ListStoryActivity : AppCompatActivity() {
     }
 
     private fun getStories(token: String) {
-        storyViewModel.getStories("Bearer $token").observe(this) {
-            if (it != null) {
-                when (it) {
+        storyViewModel.getStories(token).observe(this) {
+            listStoryAdapter.submitData(lifecycle, it)
+        }
+
+        listStoryAdapter.addLoadStateListener {
+            storyViewModel.loadStateListener(it).observe(this) { state ->
+                when (state) {
                     is Result.Loading -> handleLoading(true)
-                    is Result.Success -> {
-                        handleLoading(false)
-                        listStoryAdapter.setData(it.data)
-                    }
+                    is Result.Success -> handleLoading(false)
                     is Result.Error -> {
                         handleLoading(false)
-                        Toast.makeText(this@ListStoryActivity, it.error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ListStoryActivity, state.error, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

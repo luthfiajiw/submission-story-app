@@ -4,8 +4,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.submission.app.story.shared.models.GenericResponse
 import com.submission.app.story.shared.utils.Result
+import com.submission.app.story.story.data.StoryPagingSource
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -16,15 +21,15 @@ import java.io.File
 import java.io.FileOutputStream
 
 class StoryRepository(private val storyRequest: StoryRequest) {
-    fun getStories(token: String): LiveData<Result<StoryResponse>> = liveData {
-        emit(Result.Loading)
-        try {
-            val response = storyRequest.getStories(token)
-            emit(Result.Success(response))
-        } catch (e: Exception) {
-            val errorMessage = e.message.toString()
-            emit(Result.Error(errorMessage))
-        }
+    fun getStories(token: String): LiveData<PagingData<Story>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(storyRequest, token)
+            }
+        ).liveData
     }
 
     fun uploadImage(token: String, getFile: File, desc: String): LiveData<Result<GenericResponse>> = liveData {

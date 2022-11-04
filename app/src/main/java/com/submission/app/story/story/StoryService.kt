@@ -11,9 +11,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface StoryRequest {
-    @GET("stories?size=20")
+    @GET("stories")
     suspend fun getStories(
-        @Header("Authorization") token : String
+        @Header("Authorization") token : String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
     ) : StoryResponse
 
     @Multipart
