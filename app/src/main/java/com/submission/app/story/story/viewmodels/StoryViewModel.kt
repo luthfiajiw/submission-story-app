@@ -18,9 +18,11 @@ class StoryViewModel(
     private val pref: AuthPref
 ) : ViewModel() {
 
-    fun getStories(token: String) = storyRepository.getStories(token).cachedIn(viewModelScope)
+    fun getStories(token: String, location: Int) = storyRepository.getStories(token, location).cachedIn(viewModelScope)
 
-    fun uploadImage(token: String, getFile: File, desc: String) = storyRepository.uploadImage(token, getFile, desc)
+    fun getStoriesWithLocation(token: String) = storyRepository.getStoriesWithLocation(token)
+
+    fun uploadImage(token: String, getFile: File, desc: String, lat: Double, lng: Double) = storyRepository.uploadImage(token, getFile, desc, lat, lng)
 
     fun loadStateListener(loadStates: CombinedLoadStates) : LiveData<Result<Unit>> = liveData {
         when(val result = loadStates.source.refresh) {

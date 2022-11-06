@@ -15,7 +15,13 @@ interface StoryRequest {
     suspend fun getStories(
         @Header("Authorization") token : String,
         @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("size") size: Int,
+        @Query("location") location: Int
+    ) : StoryResponse
+
+    @GET("stories?location=1")
+    suspend fun getStoriesWithLocation(
+        @Header("Authorization") token : String,
     ) : StoryResponse
 
     @Multipart
@@ -23,7 +29,9 @@ interface StoryRequest {
     suspend fun uploadImage(
         @Header("Authorization") token : String,
         @Part file: MultipartBody.Part,
-        @Part("description") description: RequestBody
+        @Part("description") description: RequestBody,
+        @Part("lat") lat: Double,
+        @Part("lon") lon: Double,
     ) : GenericResponse
 }
 

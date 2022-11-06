@@ -7,7 +7,8 @@ import com.submission.app.story.story.StoryRequest
 
 class StoryPagingSource(
     private val storyRequest: StoryRequest,
-    private val token: String
+    private val token: String,
+    private val location: Int
 ) : PagingSource<Int, Story>() {
     override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -22,7 +23,8 @@ class StoryPagingSource(
             val responseData = storyRequest.getStories(
                 "Bearer $token",
                 position,
-                params.loadSize
+                params.loadSize,
+                location
             )
 
             LoadResult.Page(

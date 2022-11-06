@@ -112,7 +112,7 @@ class ListStoryActivity : AppCompatActivity() {
     }
 
     private fun getStories(token: String) {
-        storyViewModel.getStories(token).observe(this) {
+        storyViewModel.getStories(token, 0).observe(this) {
             listStoryAdapter.submitData(lifecycle, it)
         }
 

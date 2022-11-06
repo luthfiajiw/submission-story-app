@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -18,6 +19,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.databinding.ActivityAddStoryBinding
 import com.submission.app.story.shared.components.CustomButton
@@ -38,7 +42,10 @@ class AddStoryActivity : AppCompatActivity() {
     private lateinit var storyViewModel: StoryViewModel
     private lateinit var edDescription: TextField
     private lateinit var btnUpload: CustomButton
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var getFile: File? = null
+    private var lat: Double = 0.0
+    private var lng: Double = 0.0
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -52,7 +59,9 @@ class AddStoryActivity : AppCompatActivity() {
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         initViewModel()
+        getMyLocation()
         supportActionBar?.apply {
             title = "Add Story"
             setDisplayHomeAsUpEnabled(true)
@@ -102,7 +111,9 @@ class AddStoryActivity : AppCompatActivity() {
                     storyViewModel.uploadImage(
                         cred.token,
                         getFile!!,
-                        edDescription.text.toString()
+                        edDescription.text.toString(),
+                        lat,
+                        lng
                     ).observe(this) {
                         if (it != null) {
                             when (it) {
@@ -173,6 +184,33 @@ class AddStoryActivity : AppCompatActivity() {
             val myFile = uriToFile(selectedImg, this@AddStoryActivity)
             getFile = myFile
             binding.previewImageView.setImageURI(selectedImg)
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        isGranted: Boolean -> if (isGranted) getMyLocation()
+    }
+
+    private fun getMyLocation() {
+        if (ContextCompat.checkSelfPermission(this.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    lat = location.latitude
+                    lng = location.longitude
+                } else {
+                    Toast.makeText(
+                        this@AddStoryActivity,
+                        "Location is not found. Try Again",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 }

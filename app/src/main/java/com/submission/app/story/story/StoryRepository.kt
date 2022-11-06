@@ -21,18 +21,29 @@ import java.io.File
 import java.io.FileOutputStream
 
 class StoryRepository(private val storyRequest: StoryRequest) {
-    fun getStories(token: String): LiveData<PagingData<Story>> {
+    fun getStories(token: String, location: Int): LiveData<PagingData<Story>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10
             ),
             pagingSourceFactory = {
-                StoryPagingSource(storyRequest, token)
+                StoryPagingSource(storyRequest, token, location)
             }
         ).liveData
     }
 
-    fun uploadImage(token: String, getFile: File, desc: String): LiveData<Result<GenericResponse>> = liveData {
+    fun getStoriesWithLocation(token: String): LiveData<Result<StoryResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val response = storyRequest.getStoriesWithLocation("Bearer $token")
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            val errorMessage = e.message.toString()
+            emit(Result.Error(errorMessage))
+        }
+    }
+
+    fun uploadImage(token: String, getFile: File, desc: String, lat: Double, lng: Double): LiveData<Result<GenericResponse>> = liveData {
         emit(Result.Loading)
         try {
             val file = reduceFileImage(getFile as File)
@@ -45,7 +56,7 @@ class StoryRepository(private val storyRequest: StoryRequest) {
                 requestImageFile
             )
 
-            val response = storyRequest.uploadImage("Bearer $token", imageMultipart, description)
+            val response = storyRequest.uploadImage("Bearer $token", imageMultipart, description, lat, lng)
             emit(Result.Success(response))
         } catch (e: Exception) {
             val errorMessage = e.message.toString()
