@@ -32,12 +32,12 @@ class StoryViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
+    private lateinit var storyViewModel: StoryViewModel
+
     @Mock
     private lateinit var authPref: AuthPref
     @Mock
     private lateinit var storyRepository: StoryRepository
-    @Mock
-    private lateinit var storyViewModel: StoryViewModel
     @Mock
     private lateinit var file: File
     private val token = "token"
@@ -73,7 +73,7 @@ class StoryViewModelTest {
 
         val actualResponse = storyViewModel.uploadImage(token, file, "desc", 0.0, 0.0).getOrAwaitValue()
 
-        verify(storyRepository.uploadImage(token, file, "desc", 0.0, 0.0))
+        verify(storyRepository).uploadImage(token, file, "desc", 0.0, 0.0)
         Assert.assertTrue(actualResponse is Result.Success)
     }
 

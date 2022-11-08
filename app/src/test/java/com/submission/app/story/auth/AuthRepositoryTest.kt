@@ -28,6 +28,7 @@ class AuthRepositoryTest {
 
     @Mock
     private lateinit var authRequest: AuthRequest
+
     private lateinit var authRepository: AuthRepository
 
     @Before

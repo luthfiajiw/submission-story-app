@@ -21,7 +21,6 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class SplashViewModelTest {
 
-    @Mock
     private lateinit var splashViewModel: SplashViewModel
 
     @Mock

@@ -29,8 +29,8 @@ class AuthViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    @Mock
     private lateinit var authViewModel: AuthViewModel
+
     @Mock
     private lateinit var authPref: AuthPref
     @Mock
