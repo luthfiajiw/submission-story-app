@@ -44,7 +44,7 @@ class AuthRepositoryTest {
             password = "123456"
         )
 
-        val expectedResponse = DataDummy.dummyRegisterResponse()
+        val expectedResponse = DataDummy.dummySuccessResponse()
         val actualResponse = authRepository.onRegister(registerModel)
 
         actualResponse.observeForTesting {

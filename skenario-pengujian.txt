@@ -1,0 +1,68 @@
+Skenario Testing
+
+Unit Test
+
+Class SplashViewModelTest
+
+1. when Get Credential should not null and return The Credential
+- memastikan tidak mengembalikan data null
+- dan mengembalikan data berupa credential user
+
+======================================================================
+
+Class AuthRepositoryTest
+
+1. when Register should not error
+- mengirim argumen data registrasi dengan benar
+- memastikan bahwa registrasi berhasil dengan data yang diberikan
+
+2. when Login should not error
+- mengirim argumen data login dengan benar
+- memastikan bahwa login berhasil dengan data yang diberikan
+
+======================================================================
+
+Class AuthViewModelTest
+
+1. when Register should not return null and return success
+- mengirim argumen data registrasi dengan benar
+- memastikan bahwa registrasi berhasil melalui viemodel dengan data yang diberikan
+- mengembalikan response sukses dan bukan null
+
+2. when Login should not error and return login result
+- mengirim argumen data login dengan benar
+- memastikan bahwa login berhasil melalui viewmodel dengan data yang diberikan
+- mengembalikan response sukses dan bukan null
+
+3. verify Save Credential is working
+- memastikan fungsi saveCredential() terpanggil dari dalam fungsi
+onSaveCredential() satu kali
+
+======================================================================
+
+Class StoryRepositoryTest
+
+1. when Get Stories with location should not error
+- memastikan get stories berhasil dan tidak mengembalikan null
+
+2. when Upload Story should not error
+- memastikan upload story berhasil dan mengembalikan response sukses
+
+======================================================================
+
+Class StoryViewModelTest
+
+1. when Get Stories with location should return list of story
+- memastikan get stories tidak error
+- mengembalikan list story bukan nilai null
+
+2. when Upload Story should not error
+- memastikan upload story berhasil melalui viewmodel dan mengembalikan response sukses
+
+3. when Get Credential should not null and return The Credential
+- memastikan tidak mengembalikan data null
+- dan mengembalikan data berupa credential user
+
+4. verify Sign out is working
+- memastikan fungsi deleteCredential() terpanggil dari dalam fungsi
+sigOut() satu kali

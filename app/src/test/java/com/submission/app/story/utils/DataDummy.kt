@@ -3,6 +3,8 @@ package com.submission.app.story.utils
 import com.submission.app.story.auth.models.LoginResponse
 import com.submission.app.story.auth.models.LoginResult
 import com.submission.app.story.shared.models.GenericResponse
+import com.submission.app.story.story.Story
+import com.submission.app.story.story.StoryResponse
 
 object DataDummy {
     fun generateDummyCredential(): LoginResult {
@@ -13,7 +15,7 @@ object DataDummy {
         )
     }
 
-    fun dummyRegisterResponse(): GenericResponse {
+    fun dummySuccessResponse(): GenericResponse {
         return GenericResponse(
             error = false,
             message = "success"
@@ -29,6 +31,27 @@ object DataDummy {
                 name = "name",
                 userId = "user_id"
             )
+        )
+    }
+
+    fun generateDummyStoryResponse(): StoryResponse {
+        val items: MutableList<Story> = arrayListOf()
+        for (i in 0..10) {
+            val story = Story(
+                "id",
+                "name $i",
+                "description $i",
+                "url",
+                0.0,
+                0.0,
+                "2022108"
+            )
+            items.add(story)
+        }
+        return StoryResponse(
+            error = false,
+            message = "success",
+            listStory = items
         )
     }
 }
