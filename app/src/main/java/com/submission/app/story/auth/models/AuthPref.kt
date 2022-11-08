@@ -7,7 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class AuthPref private constructor(private val dataStore: DataStore<Preferences>) {
+class AuthPref constructor(private val dataStore: DataStore<Preferences>) {
     fun getCredential(): Flow<LoginResult> {
         return dataStore.data.map { prefs ->
             LoginResult(
