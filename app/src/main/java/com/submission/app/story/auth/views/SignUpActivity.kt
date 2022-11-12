@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.submission.app.story.auth.viewmodels.AuthViewModel
 import com.submission.app.story.auth.models.AuthModel
 import com.submission.app.story.auth.models.AuthPref
+import com.submission.app.story.auth.viewmodels.AuthViewModelFactory
 import com.submission.app.story.databinding.ActivitySignUpBinding
 import com.submission.app.story.shared.components.CustomButton
 import com.submission.app.story.shared.components.TextField
@@ -45,7 +46,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        val factory = ViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
+        val factory = AuthViewModelFactory.getInstance(AuthPref.getInstance(dataStore))
         authViewModel = ViewModelProvider(this@SignUpActivity, factory)[AuthViewModel::class.java]
     }
 

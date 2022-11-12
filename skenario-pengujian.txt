@@ -53,7 +53,7 @@ Class StoryRepositoryTest
 Class StoryViewModelTest
 
 1. when Get Stories with location should return list of story
-- memastikan get stories tidak error
+- memastikan get stories with location tidak error
 - mengembalikan list story bukan nilai null
 
 2. when Upload Story should not error
@@ -66,3 +66,7 @@ Class StoryViewModelTest
 4. verify Sign out is working
 - memastikan fungsi deleteCredential() terpanggil dari dalam fungsi
 sigOut() satu kali
+
+5. when Get Stories should not Null and return Stories
+- memastikan data tidak null
+- mengembalikan data berupa list story

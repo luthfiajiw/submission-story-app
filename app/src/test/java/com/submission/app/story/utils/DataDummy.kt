@@ -38,13 +38,13 @@ object DataDummy {
         val items: MutableList<Story> = arrayListOf()
         for (i in 0..10) {
             val story = Story(
-                "id",
+                "id$i",
                 "name $i",
                 "description $i",
                 "url",
                 0.0,
                 0.0,
-                "2022108"
+                "12102022"
             )
             items.add(story)
         }

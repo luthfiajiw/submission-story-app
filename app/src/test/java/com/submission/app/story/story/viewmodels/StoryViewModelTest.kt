@@ -2,15 +2,22 @@ package com.submission.app.story.story.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.AsyncPagingDataDiffer
+import androidx.paging.PagingData
+import androidx.recyclerview.widget.ListUpdateCallback
 import com.submission.app.story.MainDispatcherRule
 import com.submission.app.story.auth.models.AuthPref
 import com.submission.app.story.auth.models.LoginResult
 import com.submission.app.story.shared.models.GenericResponse
 import com.submission.app.story.shared.utils.Result
+import com.submission.app.story.story.Story
 import com.submission.app.story.story.StoryRepository
 import com.submission.app.story.story.StoryResponse
+import com.submission.app.story.story.views.ListStoryAdapter
 import com.submission.app.story.utils.DataDummy
+import com.submission.app.story.utils.StoryPagingSource
 import com.submission.app.story.utils.getOrAwaitValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -48,6 +55,30 @@ class StoryViewModelTest {
     }
 
     @Test
+    fun `when Get Stories should not Null and return Stories`() = runTest {
+        val dummyStories = DataDummy.generateDummyStoryResponse()
+        val data: PagingData<Story> = StoryPagingSource.snapshot(dummyStories.listStory)
+        val expectedStories = MutableLiveData<PagingData<Story>>()
+        expectedStories.value = data
+
+        `when`(storyRepository.getStories(token, 0)).thenReturn(expectedStories)
+
+        val actualStories: PagingData<Story> = storyViewModel.getStories(token, 0).getOrAwaitValue()
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = ListStoryAdapter.DIFF_CALLBACK,
+            updateCallback = noopListUpdateCallback,
+            workerDispatcher = Dispatchers.Main
+        )
+
+        differ.submitData(actualStories)
+
+        Assert.assertNotNull(differ.snapshot())
+        Assert.assertEquals(dummyStories.listStory, differ.snapshot())
+        Assert.assertEquals(dummyStories.listStory.size, differ.snapshot().size)
+    }
+
+    @Test
     fun `when Get Stories with location should return list of story`() {
         val expectedResponse = MutableLiveData<Result<StoryResponse>>()
         expectedResponse.value = Result.Success(DataDummy.generateDummyStoryResponse())
@@ -55,7 +86,7 @@ class StoryViewModelTest {
 
         val actualResponse = storyViewModel.getStoriesWithLocation(token).getOrAwaitValue()
 
-        Mockito.verify(storyRepository).getStoriesWithLocation(token)
+        verify(storyRepository).getStoriesWithLocation(token)
         Assert.assertNotNull(actualResponse)
         Assert.assertEquals(
             (expectedResponse.value as Result.Success).data.listStory,
@@ -99,5 +130,12 @@ class StoryViewModelTest {
     fun `verify Sign out is working`() = runTest {
         storyViewModel.signOut()
         verify(authPref, times(1)).deleteCredential()
+    }
+
+    val noopListUpdateCallback = object : ListUpdateCallback {
+        override fun onInserted(position: Int, count: Int) {}
+        override fun onRemoved(position: Int, count: Int) {}
+        override fun onMoved(fromPosition: Int, toPosition: Int) {}
+        override fun onChanged(position: Int, count: Int, payload: Any?) {}
     }
 }
